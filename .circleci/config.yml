@@ -100,7 +100,7 @@ jobs:
           command: |
             # Your code here
             cd backend
-            npm run test
+            npm run test:cov
             
 #   scan-frontend:
 #     docker:
