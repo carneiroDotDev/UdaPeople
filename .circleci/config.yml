@@ -114,7 +114,7 @@ jobs:
           keys: [frontend-build]
       # Your job code here
       - run:
-          name: test frontend
+          name: scan frontend vulnerability
           command: |
             # Your code here
             cd frontend
@@ -132,7 +132,7 @@ jobs:
           keys: [backend-build]
       # Your job code here
       - run:
-          name: test backend
+          name: scan backend vulnerability
           command: |
             # Your code here
             cd backend
