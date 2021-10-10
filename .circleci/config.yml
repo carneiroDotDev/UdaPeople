@@ -62,7 +62,7 @@ jobs:
           name: Back-end build
           command: |
             # Your code here
-            cd frontend
+            cd backend
             sudo npm i
             npm run build
       - save_cache:
