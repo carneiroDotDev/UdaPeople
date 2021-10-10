@@ -118,6 +118,7 @@ jobs:
           command: |
             # Your code here
             cd frontend
+            sudo npm i
             npm audit --audit-level=critical
 
   scan-backend:
