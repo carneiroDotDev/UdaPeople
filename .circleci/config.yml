@@ -16,8 +16,8 @@ commands:
           name: Destroy environments
           when: on_fail
           command: |
-            aws cloudformation delete-stack --stack-name backend-${CIRCLE_WORKFLOW_ID:0:7}
-            aws cloudformation delete-stack --stack-name frontend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7}
+            aws cloudformation delete-stack --stack-name udapeople-frontend-${CIRCLE_WORKFLOW_ID:0:7}
             exit 0
 
   revert-migrations:
@@ -255,6 +255,7 @@ jobs:
       #       yum -y install nodejs npm tar gzip jq git
       - run:
           name: Run migrations
+          no_output_timeout: 20m
           command: |
             cd backend
             npm i
