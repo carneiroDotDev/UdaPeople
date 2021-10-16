@@ -256,10 +256,13 @@ jobs:
       - run:
           name: Run migrations
           no_output_timeout: 20m
+          working_directory: ./backend
           command: |
-            cd backend
             npm i
             sudo npm install pm2 -g
+            pwd
+            ls -lta
+            more .env
             npm run migrations > migration.log
             cat migration.log
             migration_succesful=$(cat migration.log | grep -c "has been executed successfully")
