@@ -55,8 +55,8 @@ jobs:
             sudo npm i
             npm run build
       - save_cache:
-          paths: [frontend/node_modules]
           key: frontend-build
+          paths: [frontend/node_modules]
 
   build-backend:
     docker:
@@ -75,7 +75,7 @@ jobs:
       - save_cache:
           key: backend-build
           paths: 
-            - ~/project/backend/node_modules
+            - ./backend/node_modules
 
   test-frontend:
     docker:
@@ -85,7 +85,7 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys: [frontend-build]
+          key: frontend-build
       # Your job code here
       - run:
           name: test frontend
@@ -118,7 +118,7 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys: [frontend-build]
+          key: frontend-build
       # Your job code here
       - run:
           name: scan frontend vulnerability
@@ -136,7 +136,7 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys: [backend-build]
+          key: backend-build
       # Your job code here
       - run:
           name: scan backend vulnerability
