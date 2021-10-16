@@ -263,6 +263,7 @@ jobs:
             npm i
             sudo npm install pm2 -g
             pwd
+            npm run build
             echo ENVIRONMENT=production > ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
             echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
@@ -439,8 +440,8 @@ workflows:
           requires: [deploy-infrastructure]
       - run-migrations:
           requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+      - deploy-frontend:
+          requires: [run-migrations]
       # - deploy-backend:
       #     requires: [run-migrations]
       # - smoke-test:
