@@ -276,6 +276,7 @@ jobs:
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
             more .env
             ls -lta
+            ls .env
             npm run migrations > migration.log
             cat migration.log
             migration_succesful=$(cat migration.log | grep -c "has been executed successfully")
