@@ -45,8 +45,8 @@ jobs:
       - image: circleci/node:13.8.0
     steps:
       - checkout
-      - restore_cache:
-          keys: [frontend-build]
+      # - restore_cache:
+      #     keys: [frontend-build]
       - run:
           name: Build front-end
           command: |
@@ -108,7 +108,6 @@ jobs:
           command: |
             # Your code here
             cd backend
-            sudo npm i
             npm run test
             
   scan-frontend:
@@ -126,8 +125,7 @@ jobs:
           command: |
             # Your code here
             cd frontend
-            sudo npm i
-            npm audit fix --audit-level=critical 
+            npm audit --audit-level=critical 
 
   scan-backend:
     docker:
@@ -145,7 +143,7 @@ jobs:
           command: |
             # Your code here
             cd backend
-            npm audit fix --audit-level=critical 
+            npm audit --audit-level=critical 
 
   deploy-infrastructure:
     docker:
@@ -260,7 +258,6 @@ jobs:
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
             npm i
-            npm audit fix --audit-level=critical 
             sudo npm run migrations > migration.log
             cat migration.log
             migration_succesful=$(cat migration.log | grep -c "has been executed successfully")
@@ -273,11 +270,11 @@ jobs:
               --request PUT --data "1" \
               https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID}
       # Here's where you will add some code to rollback on failure
-      - run:
-          name: Revert migrations
-          when: on_fail
-          - revert-migrations
-          - destroy-environment       
+      # - run:
+      #     name: Revert migrations
+      #     when: on_fail
+      - revert-migrations
+      - destroy-environment       
 
 #   deploy-frontend:
 #     docker:
