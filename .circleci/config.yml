@@ -405,6 +405,8 @@ jobs:
           command: |
             # your code here
             echo ${CIRCLE_WORKFLOW_ID}
+            BACKEND_DNS=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicDnsName' --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)            
+            export API_URL="${BACKEND_DNS}:3030"
             export API_URL="http://${BACKEND_DNS}:3030"
             echo "${API_URL}"
             curl "${API_URL}/api/status"
