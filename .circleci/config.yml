@@ -275,8 +275,7 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
-            npm run premigrations:generate
-            npm run migrations:create
+            npm run premigrations
             npm run migrations:generate
             npm run migrations > migration.log
             cat migration.log
