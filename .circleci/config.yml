@@ -30,16 +30,14 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
-            SUCCESS=$(curl -H "token: 76f9514c-4cdd-4658-88f9-d7a705af6604" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7})
+            # store result in SUCCESS if there was a successful migration associated with the workflow id
+            SUCCESS=`curl -H "token: 76f9514c-4cdd-4658-88f9-d7a705af6604" --request GET https://api.memstash.io/values/migration_${CIRCLE_WORKFLOW_ID:0:7}`
             echo $SUCCESS
-            if [ $SUCCESS==1 ]
+            if [[ $SUCCESS == 1 ]];
             then
-              echo "Start revert"
               cd ~/project/backend
-              npm i
-              #  Add revert code here. You can find this in the Getting Started section.
-              npm run migrations:revert
+              npm install
+              npm run migrations:revert #revert the successful migration
             fi
             
 jobs:
@@ -277,7 +275,9 @@ jobs:
             echo TYPEORM_USERNAME=$TYPEORM_USERNAME >> ".env"
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
+            npm install
             npm run premigrations
+            npm run migrations:revert
             npm run migrations > migration.log
             cat migration.log
             migration_succesful=$(cat migration.log | grep -c "has been executed successfully")
