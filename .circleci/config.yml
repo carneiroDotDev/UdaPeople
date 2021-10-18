@@ -388,7 +388,6 @@ jobs:
           no_output_timeout: 20m
           command: |
             # your code here
-            export ANSIBLE_HOST_KEY_CHECKING=False
             cd backend
             npm i
             npm run build
@@ -398,6 +397,7 @@ jobs:
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
+            export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure 
       - revert-migrations
