@@ -333,6 +333,7 @@ jobs:
             echo "udapeople-${CIRCLE_WORKFLOW_ID:0:7}"
             export API_URL="http://${BACKEND_IP}:3030"
             echo API_URL="${API_URL}" >> frontend/.env
+            cat frontend/.env
       - run:
           name: Deploy frontend objects
           command: |
@@ -341,9 +342,10 @@ jobs:
             echo NODE_ENV=production >> frontend/.env
             cd frontend
             npm audit fix --audit-level=critical 
+            npm install
             npm run build
-            cd dist
-            aws s3 sync . s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --delete
+            tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
+            aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
       # Here's where you will add some code to rollback on failure
       - revert-migrations
       - destroy-environment   
@@ -375,8 +377,16 @@ jobs:
           command: |
             # your code here
             export ANSIBLE_HOST_KEY_CHECKING=False
-            ansible-playbook -i .circleci/ansible/inventory.txt \
-                                .circleci/ansible/deploy-backend.yml
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            # Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure 
       - revert-migrations
       - destroy-environment 
@@ -403,10 +413,20 @@ jobs:
       - run:
           name: Backend smoke test.
           command: |
-            # your code here
-            echo ${CIRCLE_WORKFLOW_ID}
-            echo "${API_URL}"
-            curl "${API_URL}/api/status"
+            export BACKEND_IP=$(aws ec2 describe-instances --region eu-central-1  \
+                --filters "Name=tag:Project, Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" \
+                --query "Reservations[].Instances[*].PublicIpAddress" \
+                --output text)
+                          
+            echo $BACKEND_IP
+            BACKEND_URL="http://${BACKEND_IP}:3030/api/status"
+            echo $BACKEND_URL
+            if curl -s ${BACKEND_URL}
+            then
+              return 0
+            else
+              return 1
+            fi
       - run:
           name: Frontend smoke test.
           command: |
