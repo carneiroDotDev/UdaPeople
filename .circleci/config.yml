@@ -84,6 +84,7 @@ jobs:
             cp ./backend/package.json /tmp/workspace/
             cd backend/dist
             tar -zcvf /tmp/workspace/backend.tar.gz ./
+            tar -zcvf ./../../backend.tar.gz ./
       - persist_to_workspace:
           root: /tmp/workspace
           paths:
@@ -375,6 +376,8 @@ jobs:
       # attach workspace
       - attach_workspace:
           at: ~/
+      - attach_workspace:
+          at: /tmp/workspace
       - restore_cache:
           key: backend-build
       - run:
