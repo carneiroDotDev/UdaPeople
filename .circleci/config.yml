@@ -276,7 +276,6 @@ jobs:
           command: |
             npm i
             sudo npm install pm2 -g
-            pwd
             echo ENVIRONMENT=production > ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
             echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
