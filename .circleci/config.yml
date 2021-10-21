@@ -490,10 +490,10 @@ jobs:
         # Checkout code from git
         - checkout
         - run:
-          name: Install dependencies
-          command: |
-            # your code here
-            apk add --update curl npm  && pip3 install --upgrade pip && pip3 install awscli
+            name: Install dependencies
+            command: |
+              # your code here
+              apk add --update curl npm  && pip3 install --upgrade pip && pip3 install awscli
         - run:
             name: Fetch OldStack Workflow ID
             command: |
