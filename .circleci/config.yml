@@ -468,6 +468,23 @@ jobs:
             # your code here
             apk add --update curl npm  && pip3 install --upgrade pip && pip3 install awscli
       - run:
+          name: Save the ID of the actual stack
+          command: |
+            # your code here
+            export OldWorkflowID=$(aws cloudformation \
+                      list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
+                      --no-paginate --output text)
+            echo OldWorkflowID: "${OldWorkflowID}"
+              
+            curl -H "Content-Type: text/plain" \
+              -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+              --request PUT --data "$OldWorkflowID" \
+              https://api.memstash.io/values/migration-${CIRCLE_WORKFLOW_ID:0:7}
+            
+            export FetchID=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+              --request GET https://api.memstash.io/values/migration-${CIRCLE_WORKFLOW_ID:0:7})
+            echo "FetchID: ${FetchID}"
+      - run:
           name: Update cloudfront distribution
           command: |
             # your code here
@@ -498,27 +515,22 @@ jobs:
             name: Fetch OldStack Workflow ID
             command: |
               # Fetch the Old workflow ID
-              export OldWorkflowID=$(aws cloudformation \
-                      list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
-                      --no-paginate --output text)
+              export OldWorkflowID=$(curl -H "token: ${CIRCLE_WORKFLOW_ID:0:7}" \
+              --request GET https://api.memstash.io/values/migration-${CIRCLE_WORKFLOW_ID:0:7})
               echo OldWorkflowID: "${OldWorkflowID}"
               echo CIRCLE_WORKFLOW_ID "${CIRCLE_WORKFLOW_ID:0:7}"
-              # Fetch the stack names          
-              export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
-                      --stack-status-filter CREATE_COMPLETE --no-paginate --output text)) 
-              echo Stack names: "${STACKS[@]}"
         - run:
             name: Remove old stacks and files
             command: |
               # You can use any condition like:
               # if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
               # if [[ "${OldWorkflowID}" =~ "${STACKS[@]}"  ]]
-              if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
-              then
-                aws s3 rm s3://udapeople-${OldWorkflowID} --recursive
-                aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-                aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
-              fi
+              #if [[ "${CIRCLE_WORKFLOW_ID:0:7}" =~ "${OldWorkflowID}" ]]
+              #then
+              aws s3 rm s3://udapeople-${OldWorkflowID} --recursive
+              aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
+              aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+              #fi
               
 
 workflows:
