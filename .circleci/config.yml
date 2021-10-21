@@ -487,7 +487,6 @@ jobs:
       - run:
           name: Update cloudfront distribution
           command: |
-            # your code here
             # Change the initial stack name, as applicable to you
             aws cloudformation deploy \
                     --template-file .circleci/files/cloudfront.yml \
