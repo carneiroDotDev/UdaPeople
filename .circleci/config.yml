@@ -159,6 +159,7 @@ jobs:
           command: |
             # Your code here
             cd backend
+            npm i
             npm audit fix --audit-level=critical 
 
   deploy-infrastructure:
