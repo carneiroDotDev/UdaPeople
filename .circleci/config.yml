@@ -226,12 +226,10 @@ jobs:
             apk add --update ansible openssh-client tar gzip curl nodejs npm
             pip install awscli
             cat .circleci/ansible/inventory.txt
-            export ANSIBLE_HOST_KEY_CHECKING=False
       - run:
           name: Configure server
           command: |
             cd backend
-            export ANSIBLE_HOST_KEY_CHECKING=False
             echo ENVIRONMENT=production > ".env"
             echo TYPEORM_CONNECTION=postgres >> ".env"
             echo TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts >> ".env"
@@ -244,6 +242,7 @@ jobs:
             echo TYPEORM_PASSWORD=$TYPEORM_PASSWORD >> ".env"
             echo TYPEORM_DATABASE=$TYPEORM_DATABASE >> ".env"
             cd ..
+            export ANSIBLE_HOST_KEY_CHECKING=False
             ansible-playbook \
               -i .circleci/ansible/inventory.txt \
               .circleci/ansible/configure-server.yml
