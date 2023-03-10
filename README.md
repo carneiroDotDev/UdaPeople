@@ -1,5 +1,5 @@
 # UdaPeople
-Project 3 - DevOps Nanodegree Udacity
+Project 3 - DevOps Nanodegree Udacity.
 
 URL 01 - https://github.com/carneiroDotDev/UdaPeople
 URL 02 - http://udapeople-370241b.s3-website.eu-central-1.amazonaws.com
